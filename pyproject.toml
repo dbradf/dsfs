@@ -17,6 +17,7 @@ numpy = "^1.18.4"
 pandas = "^1.0.3"
 scikit-learn = "^0.23.0"
 ipython = "^7.15.0"
+matplotlib = "^3.2.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.3"
