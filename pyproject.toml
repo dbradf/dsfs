@@ -20,6 +20,7 @@ ipython = "^7.15.0"
 matplotlib = "^3.2.1"
 tqdm = "^4.46.1"
 requests = "^2.23.0"
+mnist = "^0.2.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.3"

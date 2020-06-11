@@ -479,3 +479,32 @@ def random_point(dim: int) -> Vector:
 
 def random_distances(dim: int, num_pairs: int) -> List[float]:
     return [distance(random_point(dim), random_point(dim)) for _ in range(num_pairs)]
+
+
+def fizz_buzz_encode(x: int) -> Vector:
+    if x % 15 == 0:
+        return [0, 0, 0, 1]
+    elif x % 5 == 0:
+        return [0, 0, 1, 0]
+    elif x % 3 == 0:
+        return [0, 1, 0, 0]
+    else:
+        return [1, 0, 0, 0]
+
+
+def binary_encode(x: int) -> Vector:
+    binary: List[float] = []
+
+    for i in range(10):
+        binary.append(x % 2)
+        x = x // 2
+
+    return binary
+
+
+def argmax(xs: List) -> int:
+    return max(range(len(xs)), key=lambda i: xs[i])
+
+
+def one_hot_encode(i: int, num_labels: int = 10) -> List[float]:
+    return [1.0 if j == i else 0.0 for j in range(num_labels)]
