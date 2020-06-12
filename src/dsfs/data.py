@@ -2,12 +2,16 @@ import csv
 from io import BytesIO
 import os
 import random
-import requests
+import re
 import tarfile
 from typing import Callable, List, Any
 
+from bs4 import BeautifulSoup
+import requests
+
 from dsfs.linalg.vector import Vector, distance
 
+NLP_URL = "https://www.oreilly.com/ideas/what-is-data-science"
 DATASET_DIR = "datasets"
 SPAM_DIR = "spam_data"
 BASE_SPAM_URL = "https://spamassassin.apache.org/old/publiccorpus"
@@ -531,3 +535,49 @@ def argmax(xs: List) -> int:
 
 def one_hot_encode(i: int, num_labels: int = 10) -> List[float]:
     return [1.0 if j == i else 0.0 for j in range(num_labels)]
+
+
+def fix_unicode(text: str) -> str:
+    return text.replace("\u2019", "'")
+
+
+def get_nlp_data():
+    html = requests.get(NLP_URL).text
+    soup = BeautifulSoup(html, "html5lib")
+
+    contents = soup.find("div", "main-post-radar-content")
+    regex = r"[\w']+|[\.]"
+
+    document = []
+
+    for paragraph in contents("p"):
+        words = re.findall(regex, fix_unicode(paragraph.text))
+        document.extend(words)
+
+    return document
+
+
+nlp_cluster_data = [
+    ["Hadoop", "Big Data", "HBase", "Java", "Spark", "Storm", "Cassandra"],
+    ["NoSQL", "MongoDB", "Cassandra", "HBase", "Postgres"],
+    ["Python", "scikit-learn", "scipy", "numpy", "statsmodels", "pandas"],
+    ["R", "Python", "statistics", "regression", "probability"],
+    ["machine learning", "regression", "decision trees", "libsvm"],
+    ["Python", "R", "Java", "C++", "Haskell", "programming languages"],
+    ["statistics", "probability", "mathematics", "theory"],
+    ["machine learning", "scikit-learn", "Mahout", "neural networks"],
+    ["neural networks", "deep learning", "Big Data", "artificial intelligence"],
+    ["Hadoop", "Java", "MapReduce", "Big Data"],
+    ["statistics", "R", "statsmodels"],
+    ["C++", "deep learning", "artificial intelligence", "probability"],
+    ["pandas", "R", "Python"],
+    ["databases", "HBase", "Postgres", "MySQL", "MongoDB"],
+    ["libsvm", "regression", "support vector machines"],
+]
+
+
+def get_companies():
+    url = "https://www.ycombinator.com/topcompanies/"
+    soup = BeautifulSoup(requests.get(url).text, 'html5lib')
+
+    return list({b.text for b in soup("b") if "h4" in b.get("class", ())})
