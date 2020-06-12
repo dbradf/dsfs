@@ -50,3 +50,8 @@ def magnitude(v: Vector) -> float:
 
 def distance(v: Vector, w: Vector) -> float:
     return magnitude(subtract(v, w))
+
+
+def squared_distance(v: Vector, w: Vector) -> float:
+    dist = distance(v, w)
+    return dist ** 2
