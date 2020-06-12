@@ -9,7 +9,6 @@ import tqdm
 
 from dsfs.linalg.vector import dot, Vector
 from dsfs.deep_learning import Tensor, Layer, random_tensor, zeros_like, tensor_apply, tanh
-from dsfs.data import one_hot_encode
 
 
 def generate_bigrams(document):
@@ -332,7 +331,10 @@ class SimpleRnn(Layer):
         self.input = inp
         self.prev_hidden = self.hidden
 
-        a = [(dot(self.w[h], inp) + dot(self.u[h], self.hidden) + self.b[h]) for h in range(self.hidden_dim)]
+        a = [
+            (dot(self.w[h], inp) + dot(self.u[h], self.hidden) + self.b[h])
+            for h in range(self.hidden_dim)
+        ]
 
         self.hidden = tensor_apply(tanh, a)
         return self.hidden
@@ -340,9 +342,18 @@ class SimpleRnn(Layer):
     def backward(self, gradient: Tensor):
         a_grad = [gradient[h] * (1 - self.hidden[h] ** 2) for h in range(self.hidden_dim)]
         self.b_grad = a_grad
-        self.w_grad = [[a_grad[h] * self.input[i] for i in range(self.input_dim)] for h in range(self.hidden_dim)]
-        self.u_grad = [[a_grad[h] * self.prev_hidden[h2] for h2 in range(self.hidden_dim)] for h in range(self.hidden_dim)]
-        return [sum(a_grad[h] * self.w[h][i] for h in range(self.hidden_dim)) for i in range(self.input_dim)]
+        self.w_grad = [
+            [a_grad[h] * self.input[i] for i in range(self.input_dim)]
+            for h in range(self.hidden_dim)
+        ]
+        self.u_grad = [
+            [a_grad[h] * self.prev_hidden[h2] for h2 in range(self.hidden_dim)]
+            for h in range(self.hidden_dim)
+        ]
+        return [
+            sum(a_grad[h] * self.w[h][i] for h in range(self.hidden_dim))
+            for i in range(self.input_dim)
+        ]
 
     def params(self) -> Iterable[Tensor]:
         return [self.w, self.u, self.b]

@@ -578,6 +578,6 @@ nlp_cluster_data = [
 
 def get_companies():
     url = "https://www.ycombinator.com/topcompanies/"
-    soup = BeautifulSoup(requests.get(url).text, 'html5lib')
+    soup = BeautifulSoup(requests.get(url).text, "html5lib")
 
     return list({b.text for b in soup("b") if "h4" in b.get("class", ())})

@@ -22,7 +22,7 @@ def test_vocabulary():
     assert vocab.size == 3
     assert vocab.get_id("b") == 1
     assert vocab.one_hot_encode("b") == [0, 1, 0]
-    assert vocab.get_id("z") == None
+    assert vocab.get_id("z") is None
     assert vocab.get_word(2) == "c"
 
     vocab.add("z")
